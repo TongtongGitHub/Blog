@@ -11,7 +11,20 @@
     <div v-if="content" class="content">
       <div v-html="content" class="article"  v-highlight>
       </div>
+
+      <div v-if="comments" class="comments">
+        <div v-for="comment in comments" class="comment">
+          <div class="title">
+            <span>{{comment.user.login}}</span> commented at <span>{{comment.created_at}} :</span>
+          </div>
+          <div class="text"><span>{{comment.body}}</span></div>
+        </div>
+      </div>
+      <div class="link">
+        <p><input v-on:click="linkGitHub" type="button" value="Comment"></p>
+      </div>
     </div>
+
 
     <BlogFooter></BlogFooter>
   </div>
@@ -65,12 +78,17 @@
           type: "GET",
           dataType: "json",
           success: function(data){
-            self.comments = data;
+            if(data.length > 0)
+              self.comments = data;
           },
           error: function(){
             console.log("error")
           }
         });
+      },
+      linkGitHub(){
+        var contentId = this.$route.params.id;
+        window.open("https://github.com/TongtongGitHub/TongtongBlog/issues/" + contentId);
       }
     },
     components: {BlogFooter}
@@ -92,13 +110,37 @@
       margin-left: 300px;
       background: #fff;
       padding: 20px;
-      .article {
+      .article, .comments, .link {
         width: 1000px;
         margin: 0px auto;
         padding: 20px;
       }
+      .comments {
+        border: 1px solid #ccc;
+      }
       .list {
         padding-left: 50px;
+      }
+      .title{
+        margin-bottom: 10px;
+        span {
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .text {
+        background: #dedede;
+        padding: 10px;
+      }
+      .link {
+        margin-top: 20px;
+        padding: 0 20px;
+        border: 1px solid #ccc;
+        text-align: center;
+        input {
+          width: 80px;
+          height: 30px;
+        }
       }
     }
   }
